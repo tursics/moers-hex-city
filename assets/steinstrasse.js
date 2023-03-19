@@ -11,8 +11,8 @@ var posToNeumark4 = [];
 
 function nextStepSprite(sprite) {
     if (sprite.remaining > 0) {
-        var x = sprite.x1 + Math.abs(sprite.x1 - sprite.x2) / sprite.steps * (sprite.steps - sprite.remaining);
-        var y = sprite.y1 + Math.abs(sprite.y1 - sprite.y2) / sprite.steps * (sprite.steps - sprite.remaining);
+        var x = sprite.x1 + (sprite.x2 - sprite.x1) / sprite.steps * (sprite.steps - sprite.remaining);
+        var y = sprite.y1 + (sprite.y2 - sprite.y1) / sprite.steps * (sprite.steps - sprite.remaining);
         sprite.path.setAttribute('transform', 'translate(' + x + ',' + y + ')');
 
         --sprite.remaining;
@@ -31,14 +31,14 @@ function spornSprite(isNeuerWall) {
     var pos4 = isNeuerWall ? posToNeuerWall4 : posToNeumark4;
     var sprite = isNeuerWall ? toNeuerWall[0] : toNeumarkt[0];
 
-    var rand = Math.random(1);
-    var posX1 = pos2[0] * 1. - Math.abs(pos1[0] - pos2[0]) * rand;
-    var posY1 = pos2[1] * 1. + Math.abs(pos1[1] - pos2[1]) * rand;
-    rand = Math.random(1);
-    var posX2 = pos2[0] * 1. - Math.abs(pos3[0] - pos4[0]) * rand + Math.abs(pos2[0] - pos4[0]);
-    var posY2 = pos2[1] * 1. + Math.abs(pos3[1] - pos4[1]) * rand + Math.abs(pos2[1] - pos4[1]);
+    var rand = Math.random();
+    var posX1 = pos2[0] * 1. - (pos2[0] - pos1[0]) * rand;
+    var posY1 = pos2[1] * 1. - (pos2[1] - pos1[1]) * rand;
+    rand = Math.random();
+    var posX2 = pos2[0] * 1. - (pos4[0] - pos3[0]) * rand + (pos4[0] - pos2[0]);
+    var posY2 = pos2[1] * 1. - (pos4[1] - pos3[1]) * rand + (pos4[1] - pos2[1]);
 
-    sprite.remaining = 60 * 3 + parseInt(Math.random(60 * 1));
+    sprite.remaining = 60 * 2 + parseInt(60 * Math.random());
     sprite.steps = sprite.remaining;
     sprite.x1 = posX1 - pos2[0] * 1.;
     sprite.y1 = posY1 - pos2[1] * 1.;
