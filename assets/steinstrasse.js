@@ -8,23 +8,43 @@ var posToNeumark1 = [];
 var posToNeumark2 = [];
 var posToNeumark3 = [];
 var posToNeumark4 = [];
-let angle = 0;
+
+function nextStepSprite(sprite) {
+    if (sprite.remaining > 0) {
+        var x = sprite.x1 + Math.abs(sprite.x1 - sprite.x2) / sprite.steps * (sprite.steps - sprite.remaining);
+        var y = sprite.y1 + Math.abs(sprite.y1 - sprite.y2) / sprite.steps * (sprite.steps - sprite.remaining);
+        sprite.path.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+
+        --sprite.remaining;
+    }
+}
 
 function nextStep() {
-    angle += 2;
-//    toNeuerWall[0].setAttribute("transform", "rotate(" + angle + " 125 125)")
-//    toNeumarkt[0].setAttribute("transform", "rotate(" + angle + " 125 125)")
+    nextStepSprite(toNeuerWall[0]);
+    nextStepSprite(toNeumarkt[0]);
 }
 
 function spornSprite(isNeuerWall) {
     var pos1 = isNeuerWall ? posToNeuerWall1 : posToNeumark1;
     var pos2 = isNeuerWall ? posToNeuerWall2 : posToNeumark2;
+    var pos3 = isNeuerWall ? posToNeuerWall3 : posToNeumark3;
+    var pos4 = isNeuerWall ? posToNeuerWall4 : posToNeumark4;
     var sprite = isNeuerWall ? toNeuerWall[0] : toNeumarkt[0];
 
     var rand = Math.random(1);
-    var diffX = Math.abs(pos1[0] - pos2[0]) * rand;
-    var diffY = Math.abs(pos1[1] - pos2[1]) * rand;
-    sprite.setAttribute('transform', 'translate(' + (-diffX) + ',' + (diffY) + ')');
+    var posX1 = pos2[0] * 1. - Math.abs(pos1[0] - pos2[0]) * rand;
+    var posY1 = pos2[1] * 1. + Math.abs(pos1[1] - pos2[1]) * rand;
+    rand = Math.random(1);
+    var posX2 = pos2[0] * 1. - Math.abs(pos3[0] - pos4[0]) * rand + Math.abs(pos2[0] - pos4[0]);
+    var posY2 = pos2[1] * 1. + Math.abs(pos3[1] - pos4[1]) * rand + Math.abs(pos2[1] - pos4[1]);
+
+    sprite.remaining = 60 * 3 + parseInt(Math.random(60 * 1));
+    sprite.steps = sprite.remaining;
+    sprite.x1 = posX1 - pos2[0] * 1.;
+    sprite.y1 = posY1 - pos2[1] * 1.;
+    sprite.x2 = posX2 - pos2[0] * 1.;
+    sprite.y2 = posY2 - pos2[1] * 1.;
+    sprite.path.setAttribute('transform', 'translate(' + sprite.x1 + ',' + sprite.y1 + ')');
 }
 
 function initSprites() {
@@ -36,7 +56,15 @@ function initSprites() {
         if (null === obj) {
             break;
         }
-        toNeuerWall.push(obj);
+        toNeuerWall.push({
+            path: obj,
+            remaining: 0,
+            steps: 0,
+            x1: 0,
+            x2: 0,
+            y1: 0,
+            y2: 0,
+        });
 
         ++i;
     }
@@ -47,7 +75,15 @@ function initSprites() {
         if (null === obj) {
             break;
         }
-        toNeumarkt.push(obj);
+        toNeumarkt.push({
+            path: obj,
+            remaining: 0,
+            steps: 0,
+            x1: 0,
+            x2: 0,
+            y1: 0,
+            y2: 0,
+        });
 
         ++i;
     }
